@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import sql from '@/lib/db';
 import LandingPage from '@/app/landing/LandingPage';
 
 export default async function RootPage() {
@@ -8,6 +7,8 @@ export default async function RootPage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) return <LandingPage />;
+
+  const { default: sql } = await import('@/lib/db');
 
   // Check medical_staff first
   const staff = await sql`
