@@ -5,12 +5,16 @@ import type { NextRequest } from 'next/server';
 const PROTECTED = ['/dashboard', '/orders', '/specimens', '/reports', '/profile'];
 
 export async function proxy(request: NextRequest) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // If env vars missing, pass through — page components will handle auth
+  if (!url || !key) return NextResponse.next({ request });
+
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  try {
+    const supabase = createServerClient(url, key, {
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -23,24 +27,26 @@ export async function proxy(request: NextRequest) {
           );
         },
       },
+    });
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const pathname = request.nextUrl.pathname;
+    const isProtected = PROTECTED.some(prefix => pathname.startsWith(prefix));
+
+    if (!user && isProtected) {
+      const redirect = request.nextUrl.clone();
+      redirect.pathname = '/login';
+      return NextResponse.redirect(redirect);
     }
-  );
 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const pathname = request.nextUrl.pathname;
-  const isProtected = PROTECTED.some(prefix => pathname.startsWith(prefix));
-
-  if (!user && isProtected) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
-  }
-
-  if (user && pathname === '/login') {
-    const url = request.nextUrl.clone();
-    url.pathname = '/';
-    return NextResponse.redirect(url);
+    if (user && pathname === '/login') {
+      const redirect = request.nextUrl.clone();
+      redirect.pathname = '/';
+      return NextResponse.redirect(redirect);
+    }
+  } catch {
+    // Supabase unreachable — pass through, page components handle auth
   }
 
   return response;
