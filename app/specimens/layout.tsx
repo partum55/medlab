@@ -11,7 +11,7 @@ export default async function SpecimensLayout({ children }: { children: React.Re
   const staff = await sql`
     SELECT first_name, last_name, role FROM medical_staff WHERE auth_user_id = ${user.id} LIMIT 1
   `;
-  if (!staff.length || staff[0].role !== 'Lab Technician') redirect('/dashboard/staff');
+  if (!staff.length || !['Lab Technician', 'Admin'].includes(staff[0].role)) redirect('/dashboard/staff');
 
   const member = staff[0];
   return (

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import sql from '@/lib/db';
 import NavBar from '@/components/NavBar';
 
-export default async function ReportsLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
@@ -11,7 +11,7 @@ export default async function ReportsLayout({ children }: { children: React.Reac
   const staff = await sql`
     SELECT first_name, last_name, role FROM medical_staff WHERE auth_user_id = ${user.id} LIMIT 1
   `;
-  if (!staff.length || !['Pathologist', 'Admin'].includes(staff[0].role)) redirect('/dashboard/staff');
+  if (!staff.length || staff[0].role !== 'Admin') redirect('/dashboard/staff');
 
   const member = staff[0];
   return (

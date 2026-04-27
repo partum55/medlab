@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
   const staff = await sql`
     SELECT staff_id FROM medical_staff
-    WHERE auth_user_id = ${user.id} AND role = 'Lab Technician' LIMIT 1
+    WHERE auth_user_id = ${user.id} AND role IN ('Lab Technician', 'Admin') LIMIT 1
   `;
   if (!staff.length) return Response.json({ error: 'Not a Lab Technician' }, { status: 403 });
 

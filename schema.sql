@@ -18,7 +18,7 @@ create table medical_staff (
   auth_user_id uuid references auth.users(id) on delete set null unique,
   first_name   text not null,
   last_name    text not null,
-  role         text not null check (role in ('Ordering Physician', 'Lab Technician', 'Pathologist')),
+  role         text not null check (role in ('Ordering Physician', 'Lab Technician', 'Pathologist', 'Admin')),
   department   text,
   phone        text,
   email        text

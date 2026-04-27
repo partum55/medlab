@@ -11,7 +11,7 @@ export async function PATCH(
 
   const staff = await sql`
     SELECT staff_id FROM medical_staff
-    WHERE auth_user_id = ${user.id} AND role = 'Pathologist' LIMIT 1
+    WHERE auth_user_id = ${user.id} AND role IN ('Pathologist', 'Admin') LIMIT 1
   `;
   if (!staff.length) return Response.json({ error: 'Forbidden' }, { status: 403 });
 

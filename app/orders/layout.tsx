@@ -11,7 +11,7 @@ export default async function OrdersLayout({ children }: { children: React.React
   const staff = await sql`
     SELECT first_name, last_name, role FROM medical_staff WHERE auth_user_id = ${user.id} LIMIT 1
   `;
-  if (!staff.length || staff[0].role !== 'Ordering Physician') redirect('/dashboard/staff');
+  if (!staff.length || !['Ordering Physician', 'Admin'].includes(staff[0].role)) redirect('/dashboard/staff');
 
   const member = staff[0];
   return (

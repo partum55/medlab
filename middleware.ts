@@ -2,13 +2,12 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PROTECTED = ['/dashboard', '/orders', '/specimens', '/reports', '/profile'];
+const PROTECTED = ['/dashboard', '/orders', '/specimens', '/reports', '/profile', '/admin'];
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  // If env vars missing, pass through — page components will handle auth
   if (!url || !key) return NextResponse.next({ request });
 
   let response = NextResponse.next({ request });
@@ -46,7 +45,6 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(redirect);
     }
   } catch {
-    // Supabase unreachable — pass through, page components handle auth
   }
 
   return response;

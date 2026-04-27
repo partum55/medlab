@@ -66,126 +66,125 @@ export default async function PatientDashboard() {
   `;
 
   return (
-    <div>
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <p className="field-label" style={{ marginBottom: '0.25rem' }}>Patient</p>
-          <h1 className="page-title">{patient.first_name} {patient.last_name}</h1>
-          <p className="page-subtitle">Your diagnostic records</p>
+    <div className="bg-grid-dots min-h-[calc(100vh-8rem)]" style={{ paddingBottom: '4rem' }}>
+      <header className="page-header animate-entry" style={{ borderBottom: 'none', marginBottom: '3rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+          <span className="mono" style={{ fontSize: '0.625rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--accent)', background: 'rgba(29, 78, 216, 0.08)', padding: '0.25rem 0.625rem', borderRadius: '2px' }}>
+            Patient ID #{patient.patient_id}
+          </span>
+          <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, var(--border), transparent)' }} />
         </div>
-      </div>
+        <h1 className="page-title" style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 700 }}>
+          {patient.first_name} {patient.last_name}
+        </h1>
+        <p className="page-subtitle" style={{ fontSize: '1rem', marginTop: '0.5rem' }}>
+          Your clinical history and diagnostic results.
+        </p>
+      </header>
 
-      {/* Test Orders */}
-      <section style={{ marginBottom: '2.5rem' }}>
-        <h2 style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.875rem', color: 'var(--text)' }}>
-          Test Orders
-        </h2>
-        <div className="panel">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Test</th>
-                <th>Physician</th>
-                <th>Date</th>
-                <th>Priority</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.length === 0 ? (
-                <tr><td colSpan={6} style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>No orders found.</td></tr>
-              ) : orders.map((o: any) => (
-                <tr key={o.order_id}>
-                  <td className="mono" style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>#{o.order_id}</td>
-                  <td>
-                    <span style={{ fontWeight: 500 }}>{o.test_name}</span>
-                    <span className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginLeft: '0.5rem' }}>{o.test_code}</span>
-                  </td>
-                  <td style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Dr. {o.physician}</td>
-                  <td className="mono" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>{String(o.order_date).slice(0, 10)}</td>
-                  <td>{priorityBadge(o.priority)}</td>
-                  <td>{statusBadge(o.status)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Specimens */}
-      <section style={{ marginBottom: '2.5rem' }}>
-        <h2 style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.875rem', color: 'var(--text)' }}>
-          Specimens
-        </h2>
-        <div className="panel">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Specimen ID</th>
-                <th>Order</th>
-                <th>Type</th>
-                <th>Barcode</th>
-                <th>Collected</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {specimens.length === 0 ? (
-                <tr><td colSpan={6} style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>No specimens found.</td></tr>
-              ) : specimens.map((s: any) => (
-                <tr key={s.specimen_id}>
-                  <td className="mono" style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>#{s.specimen_id}</td>
-                  <td className="mono" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>#{s.order_id}</td>
-                  <td style={{ fontWeight: 500 }}>{s.specimen_type}</td>
-                  <td className="mono" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>{s.barcode ?? '—'}</td>
-                  <td className="mono" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>{s.collection_date ? String(s.collection_date).slice(0, 10) : '—'}</td>
-                  <td>{statusBadge(s.status)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Lab Reports */}
-      <section>
-        <h2 style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.875rem', color: 'var(--text)' }}>
-          Lab Reports
-        </h2>
-        <div className="panel">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Report ID</th>
-                <th>Specimen</th>
-                <th>Date</th>
-                <th>Reviewed By</th>
-                <th>Status</th>
-                <th>Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reports.length === 0 ? (
-                <tr><td colSpan={6} style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>No reports available.</td></tr>
-              ) : reports.map((r: any) => (
-                <tr key={r.report_id}>
-                  <td className="mono" style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>#{r.report_id}</td>
-                  <td className="mono" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>#{r.specimen_id}</td>
-                  <td className="mono" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>{r.report_date ? String(r.report_date).slice(0, 10) : '—'}</td>
-                  <td style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{r.reviewer ? `Dr. ${r.reviewer}` : '—'}</td>
-                  <td>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(24rem, 1fr))', gap: '2rem' }}>
+        
+        {/* Lab Reports — High priority for patients */}
+        <section className="animate-entry" style={{ animationDelay: '100ms', gridColumn: '1 / -1' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+            <h2 style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Latest Reports
+            </h2>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+          </div>
+          
+          {reports.length === 0 ? (
+            <div className="panel" style={{ padding: '3rem', textAlign: 'center', background: 'transparent', borderStyle: 'dashed' }}>
+              <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>NO DIAGNOSTIC REPORTS ISSUED YET.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(18rem, 1fr))', gap: '1rem' }}>
+              {reports.map((r: any, i: number) => (
+                <div key={r.report_id} className="glass-panel" style={{ padding: '1.5rem', borderLeft: `3px solid ${r.overall_status === 'NORMAL' ? 'var(--success)' : r.overall_status === 'ABNORMAL' ? 'var(--warning)' : r.overall_status === 'CRITICAL' ? 'var(--error)' : 'var(--text-faint)'}` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                    <span className="mono" style={{ fontSize: '0.6875rem', color: 'var(--text-faint)' }}>REPORT #{r.report_id}</span>
                     <span className={`badge ${r.overall_status === 'NORMAL' ? 'badge-normal' : r.overall_status === 'ABNORMAL' ? 'badge-abnormal' : r.overall_status === 'CRITICAL' ? 'badge-critical' : 'badge-pending'}`}>
                       {r.overall_status ?? 'PENDING'}
                     </span>
-                  </td>
-                  <td style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', maxWidth: '16rem' }}>{r.comments ?? '—'}</td>
-                </tr>
+                  </div>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                    {r.report_date ? String(r.report_date).slice(0, 10) : '—'}
+                  </p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                    {r.comments ? `"${r.comments.slice(0, 80)}${r.comments.length > 80 ? '...' : ''}"` : 'No specific comments.'}
+                  </p>
+                  <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-faint)' }}>Reviewer: Dr. {r.reviewer ?? 'Pending'}</span>
+                    <Link href={`/reports/${r.report_id}`} style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent)', textDecoration: 'none' }}>VIEW FULL →</Link>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+            </div>
+          )}
+        </section>
+
+        {/* Test Orders */}
+        <section className="animate-entry" style={{ animationDelay: '200ms' }}>
+          <h2 style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '1.25rem' }}>
+            Test Orders
+          </h2>
+          <div className="glass-panel" style={{ overflow: 'hidden' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Test</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.length === 0 ? (
+                  <tr><td colSpan={3} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-faint)', fontStyle: 'italic' }}>No active orders.</td></tr>
+                ) : orders.map((o: any) => (
+                  <tr key={o.order_id}>
+                    <td className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-faint)' }}>#{o.order_id}</td>
+                    <td>
+                      <p style={{ fontWeight: 600, fontSize: '0.875rem', margin: 0 }}>{o.test_name}</p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-faint)', margin: 0 }}>Dr. {o.physician}</p>
+                    </td>
+                    <td>{statusBadge(o.status)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Specimens */}
+        <section className="animate-entry" style={{ animationDelay: '300ms' }}>
+          <h2 style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '1.25rem' }}>
+            Specimens
+          </h2>
+          <div className="glass-panel" style={{ overflow: 'hidden' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Barcode</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {specimens.length === 0 ? (
+                  <tr><td colSpan={3} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-faint)', fontStyle: 'italic' }}>No specimens collected.</td></tr>
+                ) : specimens.map((s: any) => (
+                  <tr key={s.specimen_id}>
+                    <td style={{ fontWeight: 600, fontSize: '0.875rem' }}>{s.specimen_type}</td>
+                    <td className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-faint)' }}>{s.barcode ?? 'UNASSIGNED'}</td>
+                    <td>{statusBadge(s.status)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
     </div>
   );
 }

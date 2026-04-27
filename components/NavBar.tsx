@@ -23,7 +23,15 @@ export default function NavBar({ role, userName }: NavBarProps) {
   const isActive = (href: string) =>
     pathname === href || (href !== '/' && pathname.startsWith(href));
 
-  const staffLinks = role === 'Ordering Physician'
+  const staffLinks = role === 'Admin'
+    ? [
+        { href: '/dashboard/staff', label: 'Dashboard' },
+        { href: '/orders/new', label: 'Orders' },
+        { href: '/specimens', label: 'Specimens' },
+        { href: '/reports', label: 'Reports' },
+        { href: '/admin', label: 'Settings' },
+      ]
+    : role === 'Ordering Physician'
     ? [
         { href: '/dashboard/staff', label: 'Dashboard' },
         { href: '/orders/new', label: 'New Order' },

@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
   const staff = await sql`
     SELECT staff_id, role FROM medical_staff
-    WHERE auth_user_id = ${user.id} AND role = 'Ordering Physician' LIMIT 1
+    WHERE auth_user_id = ${user.id} AND role IN ('Ordering Physician', 'Admin') LIMIT 1
   `;
   if (!staff.length) return Response.json({ error: 'Not an Ordering Physician' }, { status: 403 });
 
